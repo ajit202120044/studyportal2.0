@@ -20,20 +20,22 @@ def notes(request):
 
         form = NotesForm()
     notes = Notes.objects.filter(user=request.user)
-    #context = {}
+  
     return render(request, 'dashboard/note.html', {'notes': notes,'form':form})
+#deleting notes
 
 def delete_note(request,pk=None):
     Notes.objects.get(id = pk).delete()
     return redirect("notes")
 
-# class  NotesDetailView(generic . DetailView):
-#     model = Notes    
+class NotesDetailView(generic.DetailView):
+    model = Notes    
 
     # homework
 
 
 def homework(request):
-
     
-    return render(request,'dashboard/homework.html', {'dests':dests})
+    homework =Homework.objects.filter(user=request.user)
+   
+    return render(request,'dashboard/homework.html', {'homeworks':homework})
