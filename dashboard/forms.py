@@ -14,8 +14,12 @@ class HomeworkForm(forms.ModelForm):
     class Meta:
         model = Homework
         widgets = {'due' : DateInput()}
-        fields = ['subject','title','desciption','due','is_finished']      
+        fields = ['subject','title','description','due','is_finished']      
 
+#common class for search form in youtube and books and disc serach 
+
+class DashboardForm(forms.Form):
+    text = forms.CharField( max_length=100,label = "Enter your serach :" )
 
 
 

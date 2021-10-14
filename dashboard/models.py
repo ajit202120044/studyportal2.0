@@ -22,7 +22,7 @@ class Homework(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     subject = models.CharField(max_length=50)
     title = models.CharField(max_length= 100)
-    desciption = models.TextField()
+    description = models.TextField()
     due = models.DateTimeField()
     is_finished = models.BooleanField(default= False)
 

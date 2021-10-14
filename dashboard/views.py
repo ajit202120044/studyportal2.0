@@ -3,6 +3,8 @@ from . forms import *
 from django.contrib import messages
 from django.views import generic
 from django.shortcuts import redirect
+from django.utils.datastructures import MultiValueDictKeyError
+from youtubesearchpython import VideosSearch
 
 # Create your views here.
 def home(request):
@@ -46,6 +48,7 @@ def homework(request):
                     finished = False
             except:
                 finished = False
+          
             homeworks = Homework(
                     user = request.user,
                     subject = request.POST['subject'],
@@ -53,11 +56,10 @@ def homework(request):
                     description = request.POST['description'],
                     due = request.POST['due'],
                     is_finished = finished
-                
-
+              
             )    
             homeworks.save()
-            messages.success((request, f"Homework Added from { request.user.username}!!"), message)   
+            messages.success(request,f"homework Added from {request.user.username} Successfully")  
     else:
         form = HomeworkForm()
     homework = Homework.objects.filter(user=request.user)
@@ -83,3 +85,37 @@ def update_homework(request,pk = None):
 def delete_homework(request,pk= None):
      Homework.objects.get(id =pk).delete()
      return redirect("homework")
+
+
+#youtube section 
+
+
+def youtube(request):
+    if request.method == "POST":
+        form = DashboardForm(request.POST)
+        text = request.POST['text']
+        video= VideosSearch(text,limit=20)
+        result_list = []
+        for i in video.result()['result']:
+
+            result_dict ={
+                'input':text,
+                'title':i['title'],
+                'duration':i['duration'],
+                'thumbnail':i['thumbnails'][0]['url'],
+                'channel':i['channel']['name'],
+                'link':i['link'],
+                'views':i['viewCount']['short'],
+                'published':i['publishedTime']
+            }
+            desc = ''
+            if  i['descriptionSnippet']:
+                for  j in i['descriptionSnippet']:
+                    desc  += j['text']
+            result_dict['description'] = desc
+            result_list.append(result_dict)
+        return render(request,'dashboard/youtube.html',{'form': form,'results':result_list})
+      
+    else:
+        form = DashboardForm()
+    return render(request,'dashboard/youtube.html',{'form': form})
