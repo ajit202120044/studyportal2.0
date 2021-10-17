@@ -6,6 +6,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('',views.home,name = "home"),
+    path('home',views.home,name = "home"),
     path('notes',views.notes, name = "notes"),
     path('delete_note/<int:pk>',views.delete_note, name = "delete-notes"),
     path('notes_detail/<int:pk>',views.NotesDetailView.as_view(), name = "notes-detail"),
@@ -22,7 +23,14 @@ urlpatterns = [
 
     path('youtube',views.youtube,name="youtube"),
 
+ # todo
 
+     path('todo',views.todo,name="todo"),
+    path('update_todo/<int:pk>',views.update_todo,name="update-todo"),
+    path('delete_todo/<int:pk>',views.delete_todo,name="delete-todo"),
+
+
+    
 
 
 ]

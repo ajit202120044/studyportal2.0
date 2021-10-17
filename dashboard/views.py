@@ -5,11 +5,12 @@ from django.views import generic
 from django.shortcuts import redirect
 from django.utils.datastructures import MultiValueDictKeyError
 from youtubesearchpython import VideosSearch
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 def home(request):
     return render(request,'dashboard/home.html')
-
+@login_required
 def notes(request):
     if request.method == "POST":
         form = NotesForm(request.POST)
@@ -25,7 +26,7 @@ def notes(request):
   
     return render(request, 'dashboard/note.html', {'notes': notes,'form':form})
 #deleting notes
-
+@login_required
 def delete_note(request,pk=None):
     Notes.objects.get(id = pk).delete()
     return redirect("notes")
@@ -35,7 +36,7 @@ class NotesDetailView(generic.DetailView):
 
     # homework
 
-
+@login_required
 def homework(request):
     if request.method == "POST":
         form = HomeworkForm(request.POST)
@@ -71,6 +72,7 @@ def homework(request):
     return render(request,'dashboard/homework.html', {'homeworks':homework, 'homework_done': homework_done,'form':form})
 
 # upadting homework
+@login_required
 def update_homework(request,pk = None):
     homework = Homework.objects.get(id =pk)
     if homework.is_finished == True:
@@ -82,6 +84,7 @@ def update_homework(request,pk = None):
 
 
 # delete homework
+@login_required
 def delete_homework(request,pk= None):
      Homework.objects.get(id =pk).delete()
      return redirect("homework")
@@ -119,3 +122,93 @@ def youtube(request):
     else:
         form = DashboardForm()
     return render(request,'dashboard/youtube.html',{'form': form})
+
+
+    # todo 
+@login_required
+def todo (request):
+    if request.method == 'POST':
+        form = TodoForm(request.POST)
+        if  form .is_valid():
+            try:
+                finished = request.POST["is_finished"]
+                if finished == 'on':
+                    finished = True
+                else:
+                    finished = False
+            except:
+                finished = False
+            todos = Todo(
+                user = request.user,
+                title = request.POST['title'],
+                is_finished = finished
+            ) 
+            todos.save()
+            messages.success(request,f"Todo added from {request.user.username}!!")
+    else:
+        form = TodoForm()
+    todo =Todo.objects.filter(user=request.user)
+    if len(todo)== 0:
+        todo_done = True
+    else:
+        todo_done = False
+
+
+    return render (request,"dashboard/todo.html", {'todos':todo,'form':form,'todo_done':todo_done})
+
+
+    #update todo
+@login_required
+def update_todo(request,pk= None):
+    todo = Todo.objects.get(id =pk)
+    if todo.is_finished == True:
+        todo.is_finished = False
+    else:
+        todo.is_finished = True
+    todo.save()
+    return redirect('todo')
+@login_required
+def delete_todo(request,pk=None):
+    Todo.objects.get(id=pk).delete()
+    return redirect('todo')
+
+
+
+
+
+
+#registartion
+def register(request):
+    if request.method  == 'POST':
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username =form.cleaned_data.get('username')
+            messages.success(request,f" Congratulations!! Account Created for {username}!!!")
+            #redirect to login
+            return redirect("login")
+    else:
+        form = UserRegistrationForm()
+    return render(request,"dashboard/register.html",{'form':form})
+
+
+
+    #profile
+@login_required
+def profile(request):
+    homeworks = Homework.objects.filter(is_finished= False, user = request.user)
+    todos = Todo.objects.filter(is_finished= False, user = request.user)
+    if len(homeworks)== 0:
+        homework_done = True
+    else:
+        homework_done = False
+
+    if len(todos)== 0:
+        todo_done = True
+    else:
+        todo_done = False
+
+    return render(request,"dashboard/profile.html",{'homeworks':homeworks,
+    'todos':todos,
+    'homework_done':homework_done,
+    'todo_done':todo_done})
