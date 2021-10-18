@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.utils.datastructures import MultiValueDictKeyError
 from youtubesearchpython import VideosSearch
 from django.contrib.auth.decorators import login_required
+import requests
 
 # Create your views here.
 def home(request):
@@ -174,7 +175,41 @@ def delete_todo(request,pk=None):
 
 
 
+    #books
 
+
+def book(request):
+    if request.method == "POST":
+        form = DashboardForm(request.POST)
+        text = request.POST['text']
+        url = "https://www.googleapis.com/books/v1/volumes?q="+text
+        r = requests.get(url)
+        answer = r.json()
+        result_list = []
+        for i in range(10):
+            result_dict ={
+                'title':answer['items'][i]['volumeInfo']['title'],
+                'subtitle':answer['items'][i]['volumeInfo'].get('subtitle'),
+                'description':answer['items'][i]['volumeInfo'].get('description'),
+                'count':answer['items'][i]['volumeInfo'].get('pageCount'),
+                'categories':answer['items'][i]['volumeInfo'].get('categories'),
+                'rating':answer['items'][i]['volumeInfo'].get('pageRating'),
+                'thumbnail':answer['items'][i]['volumeInfo'].get('imageLinks').get('thumbnail'),
+                'preview':answer['items'][i]['volumeInfo'].get('previewLink'),
+                'author':answer['items'][i]['volumeInfo']['authors'][0],
+                'publishdate':answer['items'][i]['volumeInfo'].get('publishDate'),
+                'publisher':answer['items'][i]['volumeInfo'].get('publisher')
+
+               
+            }
+
+            
+            result_list.append(result_dict)
+        return render(request,'dashboard/books.html',{'form': form,'results':result_list})
+      
+    else:
+        form = DashboardForm()
+    return render(request,'dashboard/books.html',{'form': form})
 
 
 #registartion
@@ -190,6 +225,9 @@ def register(request):
     else:
         form = UserRegistrationForm()
     return render(request,"dashboard/register.html",{'form':form})
+
+
+
 
 
 

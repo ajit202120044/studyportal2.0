@@ -4,6 +4,25 @@
 <html lang="en">
 
 <head>
+<style>
+body{
+display: flex;
+flex-direction: column;
+height: 100vh;
+
+}
+.footer{
+margin-top: auto;
+display: inline-block;
+padding-top:5rem;
+
+}
+p{
+  margin: 0;
+  padding: 0;
+}
+
+</style>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -42,7 +61,7 @@
                 Options
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="#">Books</a>
+                <a class="dropdown-item" href="{% url 'book' %}">Books</a>
                 <a class="dropdown-item" href="#">Wikipedia</a>
                 <div class="dropdown-divider"></div>
 
@@ -86,7 +105,12 @@
 {% endif %}
 
     {% block content %}
+
     {% endblock content %}
+
+
+  
+
 
   </main>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -96,6 +120,26 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
   </script>
-</body>
 
+
+
+</body>
+<footer class ="footer">
+<!-- <div class="jumbotron jumbotron-fluid p-3 mb-2 bg-secondary text-white"> -->
+
+    <div class="text-center p-3  bg-secondary text-white" style="background-color: rgba(0, 0, 0, 0.2);">
+      © 2021 Copyright: Ajit kumar
+      <hr>
+      <a href="https://github.com/ajit202120044?tab=repositories">Github</a>
+      <a href="https://www.linkedin.com/in/ajit-kumar-11773819a/"> |
+        Linkedin</a>
+      </div>
+
+  <!-- </div> -->
+
+    </footer>
+ 
 </html>
+
+
+
