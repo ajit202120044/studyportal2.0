@@ -7,6 +7,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('',views.home,name = "home"),
     path('home',views.home,name = "home"),
+
+    #notes
+
     path('notes',views.notes, name = "notes"),
     path('delete_note/<int:pk>',views.delete_note, name = "delete-notes"),
     path('notes_detail/<int:pk>',views.NotesDetailView.as_view(), name = "notes-detail"),
@@ -33,6 +36,18 @@ urlpatterns = [
     #books
     path('book',views.book,name="book"),
 
+    #dictionary
+    path('dictionary',views.dictionary,name="dictionary"),
+
+
+    #wikipedia
+     path('wiki',views.wiki,name="wiki"),
+
+
+
+    #conversion
+    path('conversion',views.conversion,name="conversion"),
+    
 
     
 

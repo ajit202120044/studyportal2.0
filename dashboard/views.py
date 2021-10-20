@@ -7,6 +7,7 @@ from django.utils.datastructures import MultiValueDictKeyError
 from youtubesearchpython import VideosSearch
 from django.contrib.auth.decorators import login_required
 import requests
+import wikipedia
 
 # Create your views here.
 def home(request):
@@ -210,6 +211,133 @@ def book(request):
     else:
         form = DashboardForm()
     return render(request,'dashboard/books.html',{'form': form})
+ 
+
+  # dictionar
+
+
+def dictionary(request):
+    if request.method == "POST":
+        form = DashboardForm(request.POST)
+        text = request.POST['text']
+        url = "https://api.dictionaryapi.dev/api/v2/entries/en_US/"+text
+        r = requests.get(url)
+        answer = r.json()
+        try:
+            phonetics = answer[0]['phonetics'][0]['text']
+            audio = answer[0]['phonetics'][0]['audio']
+            definition = answer[0]['meanings'][0]['definitions'][0]['definition']
+            example = answer[0]['meanings'][0]['definitions'][0]['example']
+            synonyms = answer[0]['meanings'][0]['definitions'][0]['synonyms']
+            context = {
+                    
+                    'form': form,
+                    'input':text,
+                    'phonetics':phonetics,
+                    'audio':audio,
+                    'definition':definition,
+                    'example':example,
+                    'synonyms':synonyms
+
+            }
+        except:
+            context = {
+                'form': form,
+                'input':''
+            }
+        return render(request,"dashboard/dictionary.html",context)
+    else:
+
+        form = DashboardForm()
+    return render (request,"dashboard/dictionary.html",{'form':form})
+
+
+#wikipedia
+def wiki(request):
+    if request.method == 'POST':
+        text = request.POST['text']
+        form = DashboardForm(request.POST)
+        search = wikipedia.page(text)
+        context = {
+                'form':form,
+                'title':search.title,
+                'link':search.url,
+                'details':search.summary
+
+
+        }
+        return render (request,"dashboard/wiki.html",context)
+    else:
+        form = DashboardForm()
+    return render (request, "dashboard/wiki.html",{'form':form})
+
+# conversion
+
+def conversion(request):
+    if request.method == 'POST':
+        form = conversion(request.POST)
+        if request.POST['measurement'] == 'length':
+            measurement =_form = ConversionLengthForm()
+            context = {
+                'form': form,
+                'm_form': measurement_form,
+                'input': True
+            }
+            if 'input' in request.POST:
+                first = request.POST['measure1']
+                second = request.POST['measure2']
+                input = request.POST['input']
+                answer = ''
+                if input and int (input)>= 0:
+                    if  first == 'yard' and second == 'foot':
+                        answer = f"{input} yard = {int(input)*3} foot"
+                    if  first == 'foot' and second == 'foot':
+                        answer = f"{input} foot = {int(input)/3} yard"
+                context = {
+                        'form':form,
+                        'm_form':measurement_form,
+                        'input':True,
+                        'answer':answer
+
+                }
+       
+        if request.POST['measurement'] == 'mass':
+            measurement =_form = ConversionMassForm()
+            context = {
+                'form': form,
+                'm_form': measurement_form,
+                'input': True
+            }
+            if 'input' in request.POST:
+                first = request.POST['measure1']
+                second = request.POST['measure2']
+                input = request.POST['input']
+                answer = ''
+                if input and int (input)>= 0:
+                    if  first == 'pound' and second == 'kilogram':
+                        answer = f"{input} pound = {int(input)*0.453592} kilogram"
+                    if  first == 'kilogram' and second == 'pound':
+                        answer = f"{input} kilogram = {int(input)*2.20462} pound"
+                context = {
+                        'form':form,
+                        'm_form':measurement_form,
+                        'input':True,
+                        'answer':answer
+
+                }
+    else:
+
+        form = ConversionForm()
+        context = {
+            'form':form,
+            'input':False
+        }
+
+    return render (request, "dashboard/conversion.html",context)
+
+
+
+
 
 
 #registartion

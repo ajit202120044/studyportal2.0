@@ -3,7 +3,14 @@
 {% load crispy_forms_tags %}
 {% block content %}
 
-<section class='text-center container'>
+<style>
+ body { 
+         background: no-repeat url('{% static 'images/books.jpg' %}');
+        }
+</style>
+
+<section class='text-center container text-info font-weight-bold'>
+
     <h2>Search books and browse your favorite</h2>
     <p>just enter the search query to obtain the results</p><b></b>
     <form action="" method="post">
