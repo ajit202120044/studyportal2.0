@@ -272,12 +272,12 @@ def wiki(request):
     return render (request, "dashboard/wiki.html",{'form':form})
 
 # conversion
-
+@login_required
 def conversion(request):
     if request.method == 'POST':
-        form = conversion(request.POST)
+        form = ConversionForm(request.POST)
         if request.POST['measurement'] == 'length':
-            measurement =_form = ConversionLengthForm()
+            measurement_form = ConversionLengthForm()
             context = {
                 'form': form,
                 'm_form': measurement_form,
@@ -291,7 +291,7 @@ def conversion(request):
                 if input and int (input)>= 0:
                     if  first == 'yard' and second == 'foot':
                         answer = f"{input} yard = {int(input)*3} foot"
-                    if  first == 'foot' and second == 'foot':
+                    if  first == 'foot' and second == 'yard':
                         answer = f"{input} foot = {int(input)/3} yard"
                 context = {
                         'form':form,
@@ -302,7 +302,7 @@ def conversion(request):
                 }
        
         if request.POST['measurement'] == 'mass':
-            measurement =_form = ConversionMassForm()
+            measurement_form = ConversionMassForm()
             context = {
                 'form': form,
                 'm_form': measurement_form,
