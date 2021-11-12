@@ -28,7 +28,7 @@ urlpatterns = [
     path('profile/',dash_views.profile,name = 'profile'),
     path('logout/', auth_views.LogoutView.as_view(template_name='dashboard/logout.html'), name='logout'),
 
-
+    path('oauth/', include('social_django.urls', namespace='social')),
 
 
 
