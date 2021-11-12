@@ -6,6 +6,7 @@ from django.shortcuts import redirect
 from django.utils.datastructures import MultiValueDictKeyError
 from youtubesearchpython import VideosSearch
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate , login , logout
 import requests
 import wikipedia
 
@@ -271,6 +272,21 @@ def wiki(request):
         form = DashboardForm()
     return render (request, "dashboard/wiki.html",{'form':form})
 
+
+def loginPage(request):
+    if request.mehod == "POST":
+        request.POST.get('username')
+        request.POST.get('password')
+
+        user = authenticate(request,username = username , password = password)
+        if user is not None:
+            login(request, user)
+            return redirect('home')
+    context ={
+
+    }
+    return render (request,"dashboard/login.html",context)
+
 # conversion
 @login_required
 def conversion(request):
@@ -347,6 +363,8 @@ def register(request):
         if form.is_valid():
             form.save()
             username =form.cleaned_data.get('username')
+            email = form.cleaned_data.get('email')
+       
             messages.success(request,f" Congratulations!! Account Created for {username}!!!")
             #redirect to login
             return redirect("login")

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'allauth',
     'crispy_forms',
+    'social_django'
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
 ROOT_URLCONF = 'studentstudyportal.urls'
@@ -65,10 +67,21 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+
+                 'social_django.context_processors.backends',  # <-- Here
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
 ]
+
+AUTHENTICATION_BACKENDS = (
+    'social_core.backends.facebook.FacebookOAuth2',
+    'social_core.backends.twitter.TwitterOAuth',
+    'social_core.backends.github.GithubOAuth2',
+
+    'django.contrib.auth.backends.ModelBackend',
+)
 
 WSGI_APPLICATION = 'studentstudyportal.wsgi.application'
 
@@ -136,6 +149,17 @@ LOGIN_URL = 'login'
 CRISPY_TEMPLATE_PACK =  "bootstrap4"
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_FILE_PATH = str(BASE_DIR.joinpath('sent_emails'))
-EMAIL_HOST = 'localhost'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'mathsajit360@gmail.com'
+EMAIL_HOST_PASSWORD = 'Ajit@360'
+
+
+
+
+
+
+SOCIAL_AUTH_FACEBOOK_KEY = '285938013400839'  # App ID
+SOCIAL_AUTH_FACEBOOK_SECRET = 'd6c4ff820877c9837258330d90085377' 

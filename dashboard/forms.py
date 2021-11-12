@@ -1,6 +1,9 @@
 from django import forms
 from . models import *
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import User
+from django.core.exceptions import ValidationError
+# from django.contrib.auth.models import AbstractUser
 
 class NotesForm(forms.ModelForm):
     class Meta:
@@ -28,21 +31,38 @@ class TodoForm(forms.ModelForm):
         model = Todo
         fields = ['title','is_finished']
 
+# class CustomUser(AbstractUser):
+#     email = models.EmailField(unique=True)
 
-class Email(forms.EmailField): 
-    def clean(self, value):
-        super(Email, self).clean(value)
-        try:
-            User.objects.get(email=value)
-            raise forms.ValidationError("This email is already registered. Use the 'forgot password' link on the login page")
-        except User.DoesNotExist:
-            return value
+
+# class Email(forms.EmailField): 
+#     def clean(self, value):
+#         super(Email, self).clean(value)
+#         try:
+#             User.objects.get(email=value)
+#             raise forms.ValidationError("This email is already registered. Use the 'forgot password' link on the login page")
+#         except User.DoesNotExist:
+#             return value
+
+class YourForm(UserCreationForm):
+
+    def clean(self):
+       email = self.cleaned_data.get('email')
+       if User.objects.filter(email=email).exists():
+            raise ValidationError("Email exists")
+       return self.cleaned_data
+
 
 class UserRegistrationForm(UserCreationForm):
+    email = forms.EmailField(required=True)
+    first_name = forms.CharField(max_length=20)
+    last_name = forms.CharField(max_length=20)
+
+    
     class Meta:
         model = User
-        email = Email()
-        fields = ['username','email','password1','password2']
+        # email = YourForm()
+        fields = ['username','first_name','last_name','email','password1','password2']
         
 class ConversionForm(forms.Form):
 
